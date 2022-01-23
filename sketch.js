@@ -1,29 +1,29 @@
-const MIDDLE_X = 600
-const MIDDLE_Y = 300
-const WIDTH = 500
-const HEIGHT = 500
+const MIDDLE_X = window.innerWidth / 2
+const MIDDLE_Y = window.innerHeight / 2
+const WIDTH = (window.innerWidth < 500) ? window.innerwidth - 50 : 500
+const HEIGHT = (window.innerHeight < 500) ? WIDTH : 500
 const NOTCHES = 24
 
-let sunrise;
-let sunset;
+let sunrise = 0;
+let sunset = 0;
 let http;
 
 
 function setup() {
-	createCanvas(1200,600); // make an HTML canvas element width x height pixels
+	createCanvas(MIDDLE_X*2,MIDDLE_Y*2); // make an HTML canvas element width x height pixels
 	background(225);
 	http = new XMLHttpRequest();
 	const url = "https://api.sunrise-sunset.org/json?lat=40.712772&lng=-74.006058&date=today";
 	http.open("GET", url);
 	http.send();
 	http.onreadystatechange = function() {
-		if (this.status==200) {
-			response = JSON.parse(http.responseText);
-			console.log(response)
+		if (this.status==200 && sunrise == 0 && http.response != '') {
+			let response = JSON.parse(http.response);
+			
 			sunrise = parseAndConvertUTCTimeString(response["results"]["sunrise"]);
 			sunset = parseAndConvertUTCTimeString(response["results"]["sunset"]);
-			console.log("sunrise="+ sunrise);
-			console.log("sunset=" + sunset);
+			// console.log("sunrise="+ sunrise);
+			// console.log("sunset=" + sunset);
 		}
 	}
 	frameRate(1);
@@ -49,7 +49,7 @@ function draw() {
 	drawCenter();
 	drawSun();
 	if (second() == 0) {
-		console.log(hour() + "h " + minute() + "min");
+		console.log("minute() = " + minute());
 	}
 }
 
